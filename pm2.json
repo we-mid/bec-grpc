@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "bec-ocr",
+      "script": "./codegen.sh && go build && ./bec-ocr",
+      "log_date_format": "MM-DD HH:mm"
+    }
+  ]
+}

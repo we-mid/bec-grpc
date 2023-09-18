@@ -19,15 +19,17 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 
 ## Develop
 go mod tidy
+./codegen.sh
 go run server.go &
 go run client.go
 
 # Once if *.proto changed
-protoc --go_out=. --go_opt=paths=source_relative \
-    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
-    */*.proto
+./codegen.sh
 
 ## Deploy
 go build
 ./bec-ocr
+
+# Deploy via PM2
+./pm2.sh
 ```
