@@ -33,3 +33,27 @@ go build
 # Deploy via PM2
 ./pm2.sh
 ```
+
+### Troubleshootings
+
+- `go install xxx` throws: `can only use path@version syntax with 'go get'`
+
+  Should upgrade GO from `<=1.13.x`<br>
+  How to Install latest version of GO on Ubuntu 20.04 LTS (Focal Fossa)<br>
+  <https://www.cyberithub.com/how-to-install-latest-version-of-go-on-ubuntu-20-04/>
+
+- `go build` throws: `leptonica/allheaders.h: No such file or directory`
+
+  ```plain
+  go build
+  # github.com/otiai10/gosseract/v2
+  tessbridge.cpp:5:10: fatal error: leptonica/allheaders.h: No such file or directory
+      5 | #include <leptonica/allheaders.h>
+        |          ^~~~~~~~~~~~~~~~~~~~~~~~`
+
+  # if Ubuntu
+  # https://github.com/otiai10/gosseract#installation
+  # https://github.com/tesseract-ocr/tessdoc/blob/main/Installation.md
+  sudo apt install tesseract-ocr
+  sudo apt install libtesseract-dev
+  ```
