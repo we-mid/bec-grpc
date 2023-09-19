@@ -26,9 +26,12 @@ go run client.go
 # Once if *.proto changed
 ./codegen.sh
 
+## Test
+go test ./...
+
 ## Deploy
 go build
-./bec-ocr
+./bec-grpc
 
 # Deploy via PM2
 ./pm2.sh

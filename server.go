@@ -28,8 +28,8 @@ import (
 	"google.golang.org/grpc"
 
 	// hello "google.golang.org/grpc/examples/helloworld/helloworld"
-	hello "bec-ocr/helloworld"
-	ocr "bec-ocr/ocr"
+	hello "bec-grpc/helloworld"
+	ocr "bec-grpc/ocr"
 )
 
 var (

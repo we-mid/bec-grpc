@@ -1,8 +1,8 @@
 {
   "apps": [
     {
-      "name": "bec-ocr",
-      "script": "./codegen.sh && go build && ./bec-ocr",
+      "name": "bec-grpc",
+      "script": "./codegen.sh && go build && ./bec-grpc",
       "log_date_format": "MM-DD HH:mm"
     }
   ]

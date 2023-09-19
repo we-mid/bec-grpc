@@ -1,2 +1,2 @@
 *.pb.go
-/bec-ocr
+/bec-grpc

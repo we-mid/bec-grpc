@@ -1,4 +1,4 @@
-module bec-ocr
+module bec-grpc
 
 go 1.18
 
