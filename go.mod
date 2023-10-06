@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/otiai10/gosseract/v2 v2.4.1
+	github.com/rabbitmq/amqp091-go v1.9.0
 	google.golang.org/grpc v1.58.1
 	google.golang.org/protobuf v1.31.0
 )

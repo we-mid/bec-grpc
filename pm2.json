@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "bec-grpc",
-      "script": "./codegen.sh && go build && ./bec-grpc",
+      "script": "./codegen.sh && go build && docker compose up -d rabbitmq && ./bec-grpc",
       "log_date_format": "MM-DD HH:mm"
     }
   ]

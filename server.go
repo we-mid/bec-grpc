@@ -29,6 +29,7 @@ import (
 
 	// hello "google.golang.org/grpc/examples/helloworld/helloworld"
 	hello "bec-grpc/helloworld"
+	mq "bec-grpc/mq"
 	ocr "bec-grpc/ocr"
 )
 
@@ -48,6 +49,7 @@ func main() {
 
 	hello.RegisterGreeterServer(s, &hello.Server{})
 	ocr.RegisterOCRServer(s, &ocr.Server{})
+	mq.RegisterMQServer(s, &mq.Server{})
 
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {

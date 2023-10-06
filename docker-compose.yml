@@ -1,0 +1,16 @@
+version: "3"
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      # security: Docker EXPOSE a port only to Host
+      # https://stackoverflow.com/questions/22100587/docker-expose-a-port-only-to-host
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    volumes:
+      - "rabbitmq_data:/data"
+  # app:
+  #   build:
+  #     context: .
+volumes:
+  rabbitmq_data:

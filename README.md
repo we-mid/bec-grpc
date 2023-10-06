@@ -10,7 +10,7 @@ apt-get install protobuf-compiler  # if Ubuntu
 # 2.
 go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
-which protoc-gen-go 
+which protoc-gen-go
 # ~/.bashrc
 # golang, grpc
 # Update your PATH so that the protoc compiler can find the plugins:
@@ -38,6 +38,27 @@ go build
 ```
 
 ### Troubleshootings
+
+- `go run/build/test` throws `ld: library not found for -lleptonica`
+
+  ```plain
+  ζ go test ./...
+  ?       bec-grpc        [no test files]
+  ?       bec-grpc/mq     [no test files]
+  ok      bec-grpc/helloworld     (cached)
+  # bec-grpc/ocr.test
+  /usr/local/Cellar/go/1.20.2/libexec/pkg/tool/darwin_amd64/link: running clang++ failed: exit status 1
+  ld: library not found for -lleptonica
+  clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+  FAIL    bec-grpc/ocr [build failed]
+  FAIL
+
+  # if MacOS
+  # https://github.com/otiai10/gosseract#installation
+  # https://github.com/tesseract-ocr/tessdoc/blob/main/Installation.md
+  brew install tesseract
+  ```
 
 - `go install xxx` throws: `can only use path@version syntax with 'go get'`
 
