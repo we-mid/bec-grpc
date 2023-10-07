@@ -17,6 +17,9 @@ which protoc-gen-go
 # https://grpc.io/docs/languages/go/quickstart/
 export PATH="$PATH:$(go env GOPATH)/bin"
 
+## rabbitmq (if needed)
+docker compose up -d
+
 ## Develop
 go mod tidy
 ./codegen.sh
@@ -38,6 +41,13 @@ go build
 ```
 
 ### Troubleshootings
+
+- `go test` caching unexpectedly
+
+  ```sh
+  go clean -testcache
+  go test ./...
+  ```
 
 - `go run/build/test` throws `ld: library not found for -lleptonica`
 

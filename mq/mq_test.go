@@ -1,7 +1,7 @@
-package mq
+package mq_test
 
 import (
-	context "context"
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -13,6 +13,8 @@ import (
 
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	mq "bec-grpc/mq"
 )
 
 var (
@@ -23,9 +25,7 @@ var (
 
 	s    *grpc.Server
 	conn *grpc.ClientConn
-	c    MQClient
-	name = "my_channel"
-	body = `{"a":"hello","b":"world"}`
+	c    mq.MQClient
 )
 
 // How can I do test setup using the testing package in Go
@@ -37,12 +37,15 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func TestPublish(t *testing.T) {
-	// Contact the server and print out its response.
+func TestBasic(t *testing.T) {
+	key := "bec-grpc.mq.test.basic"
+	ch, _ := mq.Conn().Channel()
+	ch.QueuePurge(key, false)
+	ch.Close()
+	// publish
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-
-	r, err := c.Publish(ctx, &PublishRequest{Name: name, Body: body})
+	r, err := c.Publish(ctx, &mq.PublishRequest{Name: key, Body: key})
 	if err != nil {
 		t.Fatalf("c.Publish(...) = %v, %v", r, err)
 	}
@@ -50,20 +53,16 @@ func TestPublish(t *testing.T) {
 	if want != r.GetOk() {
 		t.Fatalf("r.GetOk() = %v, want %v", r.GetOk(), want)
 	}
-}
-
-func TestConsume(t *testing.T) {
-	// Contact the server and print out its response.
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	r, err := c.Consume(ctx, &ConsumeRequest{Name: name})
+	// consume
+	ctx1, cancel1 := context.WithTimeout(context.Background(), time.Second)
+	defer cancel1()
+	r1, err := c.Consume(ctx1, &mq.ConsumeRequest{Name: key})
 	if err != nil {
-		t.Fatalf("c.Consume(...) = %v, %v", r, err)
+		t.Fatalf("c.Consume(...) = %v, %v", r1, err)
 	}
-	want := body
-	if want != r.GetBody() {
-		t.Fatalf("r.GetBody() = %v, want %v", r.GetBody(), want)
+	want1 := key
+	if want1 != r1.GetBody() {
+		t.Fatalf("r1.GetBody() = %v, want %v", r1.GetBody(), want1)
 	}
 }
 
@@ -74,7 +73,7 @@ func setup() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s = grpc.NewServer()
-	RegisterMQServer(s, &Server{})
+	mq.RegisterMQServer(s, &mq.Server{})
 	go func() {
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)
@@ -86,7 +85,7 @@ func setup() {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	c = NewMQClient(conn)
+	c = mq.NewMQClient(conn)
 }
 
 func shutdown() {
@@ -96,4 +95,6 @@ func shutdown() {
 	if s != nil {
 		s.Stop()
 	}
+	// var forever chan (int)
+	// <-forever
 }

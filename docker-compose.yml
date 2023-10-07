@@ -1,7 +1,11 @@
+# for latest version:
+# https://github.com/we-mid/bec-sre
 version: "3"
 services:
   rabbitmq:
-    image: "rabbitmq:3-management"
+    image: "rabbitmq-custom"
+    build:
+      context: ./rabbitmq
     ports:
       # security: Docker EXPOSE a port only to Host
       # https://stackoverflow.com/questions/22100587/docker-expose-a-port-only-to-host
@@ -9,8 +13,5 @@ services:
       - "127.0.0.1:15672:15672"
     volumes:
       - "rabbitmq_data:/data"
-  # app:
-  #   build:
-  #     context: .
 volumes:
   rabbitmq_data:

@@ -27,9 +27,13 @@ service MQ {
   rpc Consume (ConsumeRequest) returns (ConsumeReply) {}
 }
 
+// https://protobuf.dev/programming-guides/proto3/#specifying-types
+
 message PublishRequest {
   string Name = 1;
   string Body = 2;
+  // uint32 Delay = 3; // 2**32 ≈ 50d
+  int64 Delay = 3;
 }
 
 message PublishReply {

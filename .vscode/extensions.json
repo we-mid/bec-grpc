@@ -1,6 +1,7 @@
 {
     "recommendations": [
       "kangping.protobuf",
-      "golang.go"
+      "golang.go",
+      "robertostermann.inline-parameters-extended"
     ]
 }
