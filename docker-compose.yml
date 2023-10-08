@@ -3,9 +3,8 @@
 version: "3"
 services:
   rabbitmq:
-    image: "rabbitmq-custom"
-    build:
-      context: ./rabbitmq
+    # https://github.com/we-mid/bec-sre/tree/main/rabbitmq
+    image: "fritx/rabbitmq-delayed:3"
     ports:
       # security: Docker EXPOSE a port only to Host
       # https://stackoverflow.com/questions/22100587/docker-expose-a-port-only-to-host
