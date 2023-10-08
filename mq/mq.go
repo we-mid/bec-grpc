@@ -5,7 +5,6 @@ package mq
 
 import (
 	"context"
-	"errors"
 	"log"
 	"time"
 
@@ -103,15 +102,15 @@ func (s *Server) Publish(ctx context.Context, in *PublishRequest) (r *PublishRep
 	return
 }
 
-func (s *Server) Consume(ctx context.Context, in *ConsumeRequest) (*ConsumeReply, error) {
+func (s *Server) Consume(ctx context.Context, in *ConsumeRequest) (r *ConsumeReply, err error) {
+	r = &ConsumeReply{Ok: false, Body: ""}
 	var ch *amqp.Channel
-	var err error
 	if ch, err = conn.Channel(); err != nil {
-		return nil, err
+		return
 	}
 	name := in.GetName()
 	if err = queueDeclare(ch, name); err != nil {
-		return nil, err
+		return
 	}
 	msgs, err := ch.Consume(
 		name,  // queue
@@ -123,17 +122,20 @@ func (s *Server) Consume(ctx context.Context, in *ConsumeRequest) (*ConsumeReply
 		nil,   // args
 	)
 	if err != nil {
-		return nil, err
+		return
 	}
 	select {
 	case d := <-msgs:
 		ch.Close()
 		body := string(d.Body[:]) // bytes to string
 		log.Printf(" [x] Received a message: %s\n", body)
-		return &ConsumeReply{Body: body}, nil
+		r = &ConsumeReply{Ok: true, Body: body}
+		return
 	case <-time.After(time.Second):
 		ch.Close()
-		return nil, errors.New("Consume timeout")
+		// return nil, errors.New("Consume timeout")
+		// won't throw error but return Ok:false
+		return
 	}
 	// var forever chan struct{}
 	// go func() {

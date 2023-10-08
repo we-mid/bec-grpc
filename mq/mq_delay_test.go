@@ -28,15 +28,21 @@ func TestDelay(t *testing.T) {
 	time.Sleep(3 * time.Second)
 	ctx1, cancel1 := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel1()
-	r1, _ := c.Consume(ctx1, &mq.ConsumeRequest{Name: key})
-	if r1 != nil {
-		t.Fatalf("r1 = %v, want nil", r1)
+	r1, err := c.Consume(ctx1, &mq.ConsumeRequest{Name: key})
+	if err != nil {
+		t.Fatalf("c.Consume(...) = %v, %v", r1, err)
+	}
+	if r1.GetOk() != false {
+		t.Fatalf("r1.GetOk() = %v, want false", r1.GetOk())
 	}
 	time.Sleep(3 * time.Second)
 	ctx2, cancel2 := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel2()
-	r2, _ := c.Consume(ctx2, &mq.ConsumeRequest{Name: key})
-	if r2 == nil {
-		t.Fatalf("r2 = %v, want not nil", r2)
+	r2, err := c.Consume(ctx2, &mq.ConsumeRequest{Name: key})
+	if err != nil {
+		t.Fatalf("c.Consume(...) = %v, %v", r1, err)
+	}
+	if r2.GetOk() != true {
+		t.Fatalf("r2.GetOk() = %v, want true", r1.GetOk())
 	}
 }

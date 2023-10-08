@@ -45,6 +45,7 @@ message ConsumeRequest {
 }
 
 message ConsumeReply {
-  // bytes Body = 1;
-  string Body = 1;
+  bool Ok = 1;
+  // bytes Body = 2;
+  string Body = 2;
 }
