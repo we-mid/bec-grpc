@@ -58,21 +58,23 @@ func init() {
 
 func (s *Server) Publish(ctx context.Context, in *PublishRequest) (r *PublishReply, err error) {
 	r = &PublishReply{Ok: false}
+	name := in.GetName()
+	body := in.GetBody()
+	delay := in.GetDelay()
+	// fmt.Printf("Publish: name=%q, body=%q, delay=%v\n", name, body, delay)
+
 	var ch *amqp.Channel
 	if ch, err = conn.Channel(); err != nil {
 		return
 	}
-	name := in.GetName()
 	if err = queueDeclare(ch, name); err != nil {
 		return
 	}
-	body := in.GetBody()
 	publishing := amqp.Publishing{
 		ContentType:  "text/plain",
 		Body:         []byte(body),
 		DeliveryMode: amqp.Persistent, // 消息持久化
 	}
-	delay := in.GetDelay()
 	xg := exchangeName
 	if delay > 0 {
 		publishing.Headers = amqp.Table{
@@ -103,23 +105,26 @@ func (s *Server) Publish(ctx context.Context, in *PublishRequest) (r *PublishRep
 }
 
 func (s *Server) Consume(ctx context.Context, in *ConsumeRequest) (r *ConsumeReply, err error) {
-	r = &ConsumeReply{Ok: false, Body: ""}
+	r = &ConsumeReply{Ok: false, Body: "", Tag: 0}
+	name := in.GetName()
+	autoAck := in.GetAutoAck()
+	// fmt.Printf("Consume: name=%q, autoAck=%v\n", name, autoAck)
+
 	var ch *amqp.Channel
 	if ch, err = conn.Channel(); err != nil {
 		return
 	}
-	name := in.GetName()
 	if err = queueDeclare(ch, name); err != nil {
 		return
 	}
 	msgs, err := ch.Consume(
-		name,  // queue
-		"",    // consumer
-		true,  // auto-ack
-		false, // exclusive
-		false, // no-local
-		false, // no-wait
-		nil,   // args
+		name,    // queue
+		"",      // consumer
+		autoAck, // auto-ack
+		false,   // exclusive
+		false,   // no-local
+		false,   // no-wait
+		nil,     // args
 	)
 	if err != nil {
 		return
@@ -129,9 +134,10 @@ func (s *Server) Consume(ctx context.Context, in *ConsumeRequest) (r *ConsumeRep
 		ch.Close()
 		body := string(d.Body[:]) // bytes to string
 		log.Printf(" [x] Received a message: %s\n", body)
-		r = &ConsumeReply{Ok: true, Body: body}
+		r = &ConsumeReply{Ok: true, Body: body, Tag: d.DeliveryTag}
 		return
-	case <-time.After(time.Second):
+	// case <-time.After(time.Second):
+	case <-time.After(500 * time.Millisecond):
 		ch.Close()
 		// return nil, errors.New("Consume timeout")
 		// won't throw error but return Ok:false
@@ -145,6 +151,13 @@ func (s *Server) Consume(ctx context.Context, in *ConsumeRequest) (r *ConsumeRep
 	// }()
 	// log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 	// <-forever
+}
+
+func (s *Server) Ack(ctx context.Context, in *AckRequest) (r *AckReply, err error) {
+	r = &AckReply{Ok: false}
+	// typ, tag := in.GetType(), in.GetTag()
+	// todo
+	return
 }
 
 func queueDeclare(ch *amqp.Channel, name string) error {

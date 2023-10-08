@@ -42,10 +42,21 @@ message PublishReply {
 
 message ConsumeRequest {
   string Name = 1;
+  bool AutoAck = 2;
 }
 
 message ConsumeReply {
   bool Ok = 1;
   // bytes Body = 2;
   string Body = 2;
+  uint64 Tag = 3;
+}
+
+message AckRequest {
+  string type = 1; // ack, nack, reject
+  uint64 tag = 2;
+}
+
+message AckReply {
+  bool Ok = 1;
 }

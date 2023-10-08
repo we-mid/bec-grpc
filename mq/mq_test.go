@@ -19,7 +19,7 @@ import (
 
 var (
 	host       = "localhost"
-	port       = 50051
+	port       = 50052 // test port
 	_, b, _, _ = runtime.Caller(0)
 	filePath   = filepath.Join(filepath.Dir(b), "WX20230824-165323@2x.png")
 
