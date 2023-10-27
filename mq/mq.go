@@ -6,6 +6,7 @@ package mq
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -16,12 +17,12 @@ type Server struct {
 }
 
 const (
-	url               = "amqp://guest:guest@localhost:5672/"
 	exchangeName      = ""
 	delayExchangeName = "exchange.delay.1"
 )
 
 var (
+	url  = ""
 	conn *amqp.Connection
 )
 
@@ -33,6 +34,10 @@ func FailedOnError(err error, message string) {
 
 func init() {
 	var err error
+	url = os.Getenv("RABBITMQ_URL")
+	if url == "" {
+		url = "amqp://guest:guest@localhost:5672/" // default
+	}
 	conn, err = amqp.Dial(url)
 	FailedOnError(err, "failed to create connection to RabbitMQ server")
 

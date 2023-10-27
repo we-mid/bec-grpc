@@ -3,6 +3,7 @@ module bec-grpc
 go 1.18
 
 require (
+	github.com/joho/godotenv v1.5.1
 	github.com/otiai10/gosseract/v2 v2.4.1
 	github.com/rabbitmq/amqp091-go v1.9.0
 	google.golang.org/grpc v1.58.1

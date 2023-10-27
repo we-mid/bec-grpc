@@ -25,6 +25,7 @@ import (
 	"log"
 	"net"
 
+	_ "github.com/joho/godotenv/autoload"
 	"google.golang.org/grpc"
 
 	// hello "google.golang.org/grpc/examples/helloworld/helloworld"
